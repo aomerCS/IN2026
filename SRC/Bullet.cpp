@@ -34,6 +34,14 @@ void Bullet::Update(int t)
 {
 	// Update position/velocity
 	GameObject::Update(t);
+	// Reduce time to live
+	mTimeToLive = mTimeToLive - t;
+	// Ensure time to live isn't negative
+	if (mTimeToLive < 0) { mTimeToLive = 0; }
+	// If time to live is zero then remove bullet from world
+	if (mTimeToLive == 0) {
+		if (mWorld) mWorld->FlagForRemoval(GetThisPtr());
+	}
 }
 
 /** Render this bullet. */

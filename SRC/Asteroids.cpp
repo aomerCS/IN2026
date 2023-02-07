@@ -70,6 +70,12 @@ void Asteroids::OnSpecialKeyPressed(int key, int x, int y)
 {
 	switch (key)
 	{
+		// If up arrow key is pressed start applying forward thrust
+	case GLUT_KEY_UP: mSpaceship->Thrust(10); break;
+		// If left arrow key is pressed start rotating anti-clockwise
+	case GLUT_KEY_LEFT: mSpaceship->Rotate(90); break;
+		// If right arrow key is pressed start rotating clockwise
+	case GLUT_KEY_RIGHT: mSpaceship->Rotate(-90); break;
 	// Default case - do nothing
 	default: break;
 	}
@@ -79,6 +85,12 @@ void Asteroids::OnSpecialKeyReleased(int key, int x, int y)
 {
 	switch (key)
 	{
+		// If up arrow key is released stop applying forward thrust
+	case GLUT_KEY_UP: mSpaceship->Thrust(0); break;
+		// If left arrow key is released stop rotating
+	case GLUT_KEY_LEFT: mSpaceship->Rotate(0); break;
+		// If right arrow key is released stop rotating
+	case GLUT_KEY_RIGHT: mSpaceship->Rotate(0); break;
 	// Default case - do nothing
 	default: break;
 	} 
