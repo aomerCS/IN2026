@@ -68,3 +68,9 @@ bool Bullet::CollisionTest(shared_ptr<GameObject> o)
 {
 	return false;
 }
+
+// My version of bullet deletion
+void Bullet::OnCollision(const GameObjectList& objects)
+{
+	mWorld->FlagForRemoval(GetThisPtr());
+}

@@ -19,6 +19,9 @@ public:
 	int GetTimeToLive(void) { return mTimeToLive; }
 
 	bool CollisionTest(shared_ptr<GameObject> o);
+	
+	// My version of bullet deletion
+	void OnCollision(const GameObjectList& objects);
 
 protected:
 	int mTimeToLive;
