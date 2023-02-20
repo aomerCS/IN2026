@@ -1,1 +1,6 @@
-﻿  Engine.vcxproj -> U:\IN2026\Lab02\lib\Engine.lib
+﻿cl : command line  warning D9035: option 'Gm' has been deprecated and will be removed in a future release
+  GameWorld.cpp
+  GameObject.cpp
+  Shape.cpp
+  Generating Code...
+  Engine.vcxproj -> U:\IN2026\Lab03\lib\Engine.lib

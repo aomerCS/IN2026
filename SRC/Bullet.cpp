@@ -1,5 +1,6 @@
 #include "GameWorld.h"
 #include "Bullet.h"
+#include "BoundingSphere.h"
 
 // PUBLIC INSTANCE CONSTRUCTORS ///////////////////////////////////////////////
 
@@ -42,34 +43,17 @@ void Bullet::Update(int t)
 	if (mTimeToLive == 0) {
 		if (mWorld) mWorld->FlagForRemoval(GetThisPtr());
 	}
-}
 
-/** Render this bullet. */
-void Bullet::Render(void)
-{
-	// Disable lighting for solid colour lines
-	glDisable(GL_LIGHTING);
-	// Start drawing lines
-	glBegin(GL_LINES);
-		// Set colour to greenish hue
-		glColor3f(0.2, 1.0, 0.6);
-		// Add vertices to draw a short line
-		glVertex3f(2.0, 0.0, 0.0);
-		glVertex3f(1.0, 0.0, 0.0);
-	// Finish drawing lines
-	glEnd();
-	// Enable lighting
-	glEnable(GL_LIGHTING);
-	// Call base class to render debug graphics if required
-	GameObject::Render();
 }
 
 bool Bullet::CollisionTest(shared_ptr<GameObject> o)
 {
-	return false;
+	if (o->GetType() != GameObjectType("Asteroid")) return false;
+	if (mBoundingShape.get() == NULL) return false;
+	if (o->GetBoundingShape().get() == NULL) return false;
+	return mBoundingShape->CollisionTest(o->GetBoundingShape());
 }
 
-// My version of bullet deletion
 void Bullet::OnCollision(const GameObjectList& objects)
 {
 	mWorld->FlagForRemoval(GetThisPtr());

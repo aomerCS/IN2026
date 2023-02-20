@@ -1,5 +1,5 @@
-#ifndef _BOUNDINGSPHERE_H
-#define _BOUNDINGSPHERE_H
+#ifndef __BOUNDINGSPHERE_H__
+#define __BOUNDINGSPHERE_H__
 
 #include "GameUtil.h"
 #include "GameObjectType.h"

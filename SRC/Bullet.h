@@ -13,14 +13,11 @@ public:
 	virtual ~Bullet(void);
 
 	virtual void Update(int t);
-	virtual void Render(void);
 
 	void SetTimeToLive(int ttl) { mTimeToLive = ttl; }
 	int GetTimeToLive(void) { return mTimeToLive; }
 
 	bool CollisionTest(shared_ptr<GameObject> o);
-	
-	// My version of bullet deletion
 	void OnCollision(const GameObjectList& objects);
 
 protected:

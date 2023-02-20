@@ -180,7 +180,7 @@ void GameWorld::UpdateCollisions(int t)
 			if (object2 != object1) {
 				if (object1->CollisionTest(object2)) {
 					collisions1.push_back(object2);
-					collisions2.push_back(object1);
+					//collisions2.push_back(object1);
 				}
 			}
 		}

@@ -73,11 +73,11 @@ void Asteroids::OnSpecialKeyPressed(int key, int x, int y)
 {
 	switch (key)
 	{
-		// If up arrow key is pressed start applying forward thrust
+	// If up arrow key is pressed start applying forward thrust
 	case GLUT_KEY_UP: mSpaceship->Thrust(10); break;
-		// If left arrow key is pressed start rotating anti-clockwise
+	// If left arrow key is pressed start rotating anti-clockwise
 	case GLUT_KEY_LEFT: mSpaceship->Rotate(90); break;
-		// If right arrow key is pressed start rotating clockwise
+	// If right arrow key is pressed start rotating clockwise
 	case GLUT_KEY_RIGHT: mSpaceship->Rotate(-90); break;
 	// Default case - do nothing
 	default: break;
@@ -88,11 +88,11 @@ void Asteroids::OnSpecialKeyReleased(int key, int x, int y)
 {
 	switch (key)
 	{
-		// If up arrow key is released stop applying forward thrust
+	// If up arrow key is released stop applying forward thrust
 	case GLUT_KEY_UP: mSpaceship->Thrust(0); break;
-		// If left arrow key is released stop rotating
+	// If left arrow key is released stop rotating
 	case GLUT_KEY_LEFT: mSpaceship->Rotate(0); break;
-		// If right arrow key is released stop rotating
+	// If right arrow key is released stop rotating
 	case GLUT_KEY_RIGHT: mSpaceship->Rotate(0); break;
 	// Default case - do nothing
 	default: break;
@@ -130,7 +130,13 @@ shared_ptr<GameObject> Asteroids::CreateSpaceship()
 	// Create a raw pointer to a spaceship that can be converted to
 	// shared_ptrs of different types because GameWorld implements IRefCount
 	mSpaceship = make_shared<Spaceship>();
-
+	mSpaceship->SetBoundingShape(make_shared<BoundingSphere>(mSpaceship->GetThisPtr(), 4.0f));
+	shared_ptr<Shape> spaceship_shape = make_shared<Shape>("spaceship.shape");
+	shared_ptr<Shape> thruster_shape = make_shared<Shape>("thruster.shape");
+	shared_ptr<Shape> bullet_shape = make_shared<Shape>("bullet.shape");
+	mSpaceship->SetSpaceshipShape(spaceship_shape);
+	mSpaceship->SetThrusterShape(thruster_shape);
+	mSpaceship->SetBulletShape(bullet_shape);
 	// Reset spaceship back to centre of the world
 	mSpaceship->Reset();
 	// Return the spaceship so it can be added to the world
@@ -139,9 +145,12 @@ shared_ptr<GameObject> Asteroids::CreateSpaceship()
 
 void Asteroids::CreateAsteroids(const uint num_asteroids)
 {
+	shared_ptr<Shape> asteroid_shape = make_shared<Shape>("asteroid.shape");
 	for (uint i = 0; i < num_asteroids; i++) {
 		shared_ptr<GameObject> asteroid = make_shared<Asteroid>();
 		asteroid->SetBoundingShape(make_shared<BoundingSphere>(asteroid->GetThisPtr(), 10.0f));
+		asteroid->SetShape(asteroid_shape);
 		mGameWorld->AddObject(asteroid);
 	}
 }
+
