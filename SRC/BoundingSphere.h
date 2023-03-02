@@ -24,6 +24,7 @@ public:
 		return false;
 	}
 
+
 	void SetRadius(float r) { mRadius = r; }
 	float GetRadius() { return mRadius; }
 
@@ -32,3 +33,4 @@ protected:
 };
 
 #endif
+

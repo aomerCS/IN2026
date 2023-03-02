@@ -43,7 +43,6 @@ void Bullet::Update(int t)
 	if (mTimeToLive == 0) {
 		if (mWorld) mWorld->FlagForRemoval(GetThisPtr());
 	}
-
 }
 
 bool Bullet::CollisionTest(shared_ptr<GameObject> o)
@@ -53,6 +52,7 @@ bool Bullet::CollisionTest(shared_ptr<GameObject> o)
 	if (o->GetBoundingShape().get() == NULL) return false;
 	return mBoundingShape->CollisionTest(o->GetBoundingShape());
 }
+
 
 void Bullet::OnCollision(const GameObjectList& objects)
 {

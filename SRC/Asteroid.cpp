@@ -19,6 +19,7 @@ Asteroid::~Asteroid(void)
 {
 }
 
+
 bool Asteroid::CollisionTest(shared_ptr<GameObject> o)
 {
 	if (GetType() == o->GetType()) return false;
@@ -31,3 +32,5 @@ void Asteroid::OnCollision(const GameObjectList& objects)
 {
 	mWorld->FlagForRemoval(GetThisPtr());
 }
+
+

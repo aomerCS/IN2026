@@ -9,6 +9,8 @@
 #include "Spaceship.h"
 #include "BoundingShape.h"
 #include "BoundingSphere.h"
+#include "GUILabel.h"
+
 
 // PUBLIC INSTANCE CONSTRUCTORS ///////////////////////////////////////////////
 
@@ -36,12 +38,27 @@ void Asteroids::Start()
 	// Add this class as a listener of the game world
 	mGameWorld->AddListener(thisPtr.get());
 
+	// Add a score keeper to the game world 
+	mGameWorld->AddListener(&mScoreKeeper);
+
+	// Add this class as a listener of the score keeper 
+	mScoreKeeper.AddListener(thisPtr);
+
+	// Add a player (watcher) to the game world 
+	mGameWorld->AddListener(&mPlayer);
+
+	// Add this class as a listener of the player 
+	mPlayer.AddListener(thisPtr);
+
 	// Add this as a listener to the world and the keyboard
 	mGameWindow->AddKeyboardListener(thisPtr);
 	// Create a spaceship and add it to the world
 	mGameWorld->AddObject(CreateSpaceship());
 	// Create some asteroids and add them to the world
 	CreateAsteroids(10);
+	// Create GUI and add to the world
+	CreateGUI();
+
 	// Start the game
 	GameSession::Start();
 }
@@ -69,15 +86,25 @@ void Asteroids::OnKeyPressed(uchar key, int x, int y)
 
 void Asteroids::OnKeyReleased(uchar key, int x, int y) {}
 
+void Asteroids::OnScoreChanged(int score)
+{
+	// Format the score message using an string-based stream 
+	std::ostringstream msg_stream;
+	msg_stream << "Score: " << score;
+	// Get the score message as a string 
+	std::string score_msg = msg_stream.str();
+	mScoreLabel->SetText(score_msg);
+}
+
 void Asteroids::OnSpecialKeyPressed(int key, int x, int y)
 {
 	switch (key)
 	{
-	// If up arrow key is pressed start applying forward thrust
+		// If up arrow key is pressed start applying forward thrust
 	case GLUT_KEY_UP: mSpaceship->Thrust(10); break;
-	// If left arrow key is pressed start rotating anti-clockwise
+		// If left arrow key is pressed start rotating anti-clockwise
 	case GLUT_KEY_LEFT: mSpaceship->Rotate(90); break;
-	// If right arrow key is pressed start rotating clockwise
+		// If right arrow key is pressed start rotating clockwise
 	case GLUT_KEY_RIGHT: mSpaceship->Rotate(-90); break;
 	// Default case - do nothing
 	default: break;
@@ -88,11 +115,11 @@ void Asteroids::OnSpecialKeyReleased(int key, int x, int y)
 {
 	switch (key)
 	{
-	// If up arrow key is released stop applying forward thrust
+		// If up arrow key is released stop applying forward thrust
 	case GLUT_KEY_UP: mSpaceship->Thrust(0); break;
-	// If left arrow key is released stop rotating
+		// If left arrow key is released stop rotating
 	case GLUT_KEY_LEFT: mSpaceship->Rotate(0); break;
-	// If right arrow key is released stop rotating
+		// If right arrow key is released stop rotating
 	case GLUT_KEY_RIGHT: mSpaceship->Rotate(0); break;
 	// Default case - do nothing
 	default: break;
@@ -124,6 +151,17 @@ void Asteroids::OnTimer(int value)
 
 }
 
+// PUBLIC INSTANCE METHOD IMPLEMENTING IPlayerListener ////////////////////////
+void Asteroids::OnPlayerKilled(int lives_left)
+{
+	// Format the lives left message using an string-based stream 
+	std::ostringstream msg_stream;
+	msg_stream << "Lives: " << lives_left;
+	// Get the lives left message as a string 
+	std::string lives_msg = msg_stream.str();
+	mLivesLabel->SetText(lives_msg);
+}
+
 // PROTECTED INSTANCE METHODS /////////////////////////////////////////////////
 shared_ptr<GameObject> Asteroids::CreateSpaceship()
 {
@@ -152,5 +190,27 @@ void Asteroids::CreateAsteroids(const uint num_asteroids)
 		asteroid->SetShape(asteroid_shape);
 		mGameWorld->AddObject(asteroid);
 	}
+}
+
+void Asteroids::CreateGUI()
+{
+	// Add a (transparent) border around the edge of the game display 
+	mGameDisplay->GetContainer()->SetBorder(GLVector2i(10, 10));
+	// Create a new GUILabel and wrap it up in a shared_ptr 
+	mScoreLabel = make_shared<GUILabel>("Score: 0");
+	// Set the vertical alignment of the label to GUI_VALIGN_TOP 
+	mScoreLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_TOP);
+	// Add the GUILabel to the GUIComponent 
+	shared_ptr<GUIComponent> score_component
+		= static_pointer_cast<GUIComponent>(mScoreLabel);
+	mGameDisplay->GetContainer()->AddComponent(score_component, GLVector2f(0.0f, 1.0f));
+
+	// Create a new GUILabel and wrap it up in a shared_ptr 
+	mLivesLabel = make_shared<GUILabel>("Lives: 3");
+	// Set the vertical alignment of the label to GUI_VALIGN_BOTTOM 
+	mLivesLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_BOTTOM);
+	// Add the GUILabel to the GUIComponent
+	shared_ptr<GUIComponent> lives_component = static_pointer_cast<GUIComponent>(mLivesLabel);
+	mGameDisplay->GetContainer()->AddComponent(lives_component, GLVector2f(0.0f, 0.0f));
 }
 

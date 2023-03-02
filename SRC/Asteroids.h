@@ -5,14 +5,19 @@
 #include "GameSession.h"
 #include "IKeyboardListener.h"
 #include "IGameWorldListener.h"
+#include "IScoreListener.h" 
+#include "ScoreKeeper.h"
+#include "Player.h"
+#include "IPlayerListener.h"
 
 class GameObject;
 class Spaceship;
+class GUILabel;
 
-class Asteroids : public GameSession, public IKeyboardListener, public IGameWorldListener
+class Asteroids : public GameSession, public IKeyboardListener, public IGameWorldListener, public IScoreListener, public IPlayerListener
 {
 public:
-	Asteroids(int argc, char *argv[]);
+	Asteroids(int argc, char* argv[]);
 	virtual ~Asteroids(void);
 
 	virtual void Start(void);
@@ -25,6 +30,14 @@ public:
 	void OnSpecialKeyPressed(int key, int x, int y);
 	void OnSpecialKeyReleased(int key, int x, int y);
 
+	// Declaration of IScoreListener interface //////////////////////////////////
+
+	void OnScoreChanged(int score);
+
+	// Declaration of the IPlayerLister interface //////////////////////////////
+
+	void OnPlayerKilled(int lives_left);
+
 	// Declaration of IGameWorldListener interface //////////////////////////////
 
 	void OnWorldUpdated(GameWorld* world) {}
@@ -36,17 +49,23 @@ public:
 
 private:
 	shared_ptr<Spaceship> mSpaceship;
+	shared_ptr<GUILabel> mScoreLabel;
+	shared_ptr<GUILabel> mLivesLabel;
 
 	uint mLevel;
 	uint mAsteroidCount;
 
 	void ResetSpaceship();
 	shared_ptr<GameObject> CreateSpaceship();
+	void CreateGUI();
 	void CreateAsteroids(const uint num_asteroids);
-	
+
 	const static uint SHOW_GAME_OVER = 0;
 	const static uint START_NEXT_LEVEL = 1;
 	const static uint CREATE_NEW_PLAYER = 2;
+
+	ScoreKeeper mScoreKeeper;
+	Player mPlayer;
 };
 
 #endif
