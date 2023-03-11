@@ -13,18 +13,18 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{97AF88B3-4E3C-43B5-8770-C655BCAAB734}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -103,14 +103,22 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\SRC\Asteroid.cpp" />
     <ClCompile Include="..\..\src\Asteroids.cpp" />
     <ClCompile Include="..\..\src\Bullet.cpp" />
+    <ClCompile Include="..\..\SRC\Explosion.cpp" />
     <ClCompile Include="..\..\src\main.cpp" />
     <ClCompile Include="..\..\src\Spaceship.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\SRC\Asteroid.h" />
     <ClInclude Include="..\..\src\Asteroids.h" />
     <ClInclude Include="..\..\src\Bullet.h" />
+    <ClInclude Include="..\..\SRC\Explosion.h" />
+    <ClInclude Include="..\..\SRC\IPlayerListener.h" />
+    <ClInclude Include="..\..\SRC\IScoreListener.h" />
+    <ClInclude Include="..\..\SRC\Player.h" />
+    <ClInclude Include="..\..\SRC\ScoreKeeper.h" />
     <ClInclude Include="..\..\src\Spaceship.h" />
   </ItemGroup>
   <ItemGroup>

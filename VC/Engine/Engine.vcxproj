@@ -14,18 +14,18 @@
     <ProjectGuid>{A573C32D-8F4C-442B-84A7-287D28FFA333}</ProjectGuid>
     <RootNamespace>Game Engine</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -124,6 +124,7 @@
     <ClInclude Include="..\..\src\GUIContainer.h" />
     <ClInclude Include="..\..\src\GUIIcon.h" />
     <ClInclude Include="..\..\src\GUILabel.h" />
+    <ClInclude Include="..\..\SRC\BoundingSphere.h" />
     <ClInclude Include="..\..\src\IGameWorldListener.h" />
     <ClInclude Include="..\..\src\IKeyboardListener.h" />
     <ClInclude Include="..\..\src\Image.h" />
