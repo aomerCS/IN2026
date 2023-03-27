@@ -68,6 +68,12 @@ private:
 
 	ScoreKeeper mScoreKeeper;
 	Player mPlayer;
+
+	// Part 1
+	void StartMenu();
+	void CreateStartMenuGUI();
+	shared_ptr<GUILabel> mStartMenuLabel;
+	bool inStartMenu;
 };
 
 #endif

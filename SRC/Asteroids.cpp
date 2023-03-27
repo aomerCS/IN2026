@@ -20,6 +20,9 @@ Asteroids::Asteroids(int argc, char *argv[])
 {
 	mLevel = 0;
 	mAsteroidCount = 0;
+
+	// Part 1
+	inStartMenu = true;
 }
 
 /** Destructor. */
@@ -58,13 +61,8 @@ void Asteroids::Start()
 	Animation *asteroid1_anim = AnimationManager::GetInstance().CreateAnimationFromFile("asteroid1", 128, 8192, 128, 128, "asteroid1_fs.png");
 	Animation *spaceship_anim = AnimationManager::GetInstance().CreateAnimationFromFile("spaceship", 128, 128, 128, 128, "spaceship_fs.png");
 
-	// Create a spaceship and add it to the world
-	mGameWorld->AddObject(CreateSpaceship());
-	// Create some asteroids and add them to the world
-	CreateAsteroids(10);
-
-	//Create the GUI
-	CreateGUI();
+	// Part 1
+	CreateStartMenuGUI();
 
 	// Add a player (watcher) to the game world
 	mGameWorld->AddListener(&mPlayer);
@@ -93,7 +91,9 @@ void Asteroids::OnKeyPressed(uchar key, int x, int y)
 		mSpaceship->Shoot();
 		break;
 	default:
-		break;
+		// Part 1
+		if (inStartMenu) { StartMenu(); }
+		else { break; }
 	}
 }
 
@@ -292,6 +292,36 @@ shared_ptr<GameObject> Asteroids::CreateExplosion()
 	return explosion;
 }
 
+// Part 1
+void Asteroids::CreateStartMenuGUI()
+{
+	// Create a new GUILabel and wrap it up in a shared_ptr
+	mStartMenuLabel = shared_ptr<GUILabel>(new GUILabel("PRESS ANY KEY EXCEPT ESC TO START"));
+	// Set the horizontal alignment of the label to GUI_HALIGN_CENTER
+	mStartMenuLabel->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
+	// Set the vertical alignment of the label to GUI_VALIGN_MIDDLE
+	mStartMenuLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
+	// Add the GUILabel to the GUIContainer  
+	shared_ptr<GUIComponent> start_game_component
+		= static_pointer_cast<GUIComponent>(mStartMenuLabel);
+	mGameDisplay->GetContainer()->AddComponent(start_game_component, GLVector2f(0.5f, 0.5f));
+}
 
+// Part 1
+void Asteroids::StartMenu()
+{
+	// Set startmenu to true
+	inStartMenu = true;
+	mStartMenuLabel->SetVisible(false);
+
+	// Create a spaceship and add it to the world
+	mGameWorld->AddObject(CreateSpaceship());
+
+	// Create some asteroids and add them to the world
+	CreateAsteroids(10);
+
+	// Create the GUI
+	CreateGUI();
+}
 
 
