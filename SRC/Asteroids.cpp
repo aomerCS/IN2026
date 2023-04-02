@@ -23,6 +23,10 @@ Asteroids::Asteroids(int argc, char *argv[])
 
 	// Part 1
 	inStartMenu = true;
+
+	// Part 2
+	highScore = 0;
+	name = "";
 }
 
 /** Destructor. */
@@ -90,10 +94,12 @@ void Asteroids::OnKeyPressed(uchar key, int x, int y)
 	case ' ':
 		mSpaceship->Shoot();
 		break;
-	default:
-		// Part 1
+	// Part 1
+	case '\r':
 		if (inStartMenu) { StartMenu(); }
 		else { break; }
+	default:
+		break;
 	}
 }
 
@@ -110,7 +116,8 @@ void Asteroids::OnSpecialKeyPressed(int key, int x, int y)
 	// If right arrow key is pressed start rotating clockwise
 	case GLUT_KEY_RIGHT: mSpaceship->Rotate(-90); break;
 	// Default case - do nothing
-	default: break;
+	default: 
+		break;
 	}
 }
 
@@ -168,6 +175,11 @@ void Asteroids::OnTimer(int value)
 	if (value == SHOW_GAME_OVER)
 	{
 		mGameOverLabel->SetVisible(true);
+
+		// Part 2
+		HighScoreGUI();
+		mScoreLabel->SetVisible(false);
+		mLivesLabel->SetVisible(false);
 	}
 
 }
@@ -254,6 +266,11 @@ void Asteroids::OnScoreChanged(int score)
 	// Get the score message as a string
 	std::string score_msg = msg_stream.str();
 	mScoreLabel->SetText(score_msg);
+
+	// Part 2
+	if (score > highScore) {
+		highScore = score;
+	}
 }
 
 void Asteroids::OnPlayerKilled(int lives_left)
@@ -296,11 +313,11 @@ shared_ptr<GameObject> Asteroids::CreateExplosion()
 void Asteroids::CreateStartMenuGUI()
 {
 	// Create a new GUILabel and wrap it up in a shared_ptr
-	mStartMenuLabel = shared_ptr<GUILabel>(new GUILabel("PRESS ANY KEY EXCEPT ESC TO START"));
+	mStartMenuLabel = shared_ptr<GUILabel>(new GUILabel("PRESS ENTER TO START"));
 	// Set the horizontal alignment of the label to GUI_HALIGN_CENTER
 	mStartMenuLabel->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_CENTER);
 	// Set the vertical alignment of the label to GUI_VALIGN_MIDDLE
-	mStartMenuLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_MIDDLE);
+	mStartMenuLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_TOP);
 	// Add the GUILabel to the GUIContainer  
 	shared_ptr<GUIComponent> start_game_component
 		= static_pointer_cast<GUIComponent>(mStartMenuLabel);
@@ -310,8 +327,8 @@ void Asteroids::CreateStartMenuGUI()
 // Part 1
 void Asteroids::StartMenu()
 {
-	// Set startmenu to true
-	inStartMenu = true;
+	// Set startmenu to false
+	inStartMenu = false;
 	mStartMenuLabel->SetVisible(false);
 
 	// Create a spaceship and add it to the world
@@ -324,4 +341,16 @@ void Asteroids::StartMenu()
 	CreateGUI();
 }
 
-
+// Part 2
+void Asteroids::HighScoreGUI()
+{
+	// Part 2
+	// Create a new GUILabel and wrap it up in a shared_ptr
+	mHighScoreLabel = shared_ptr<GUILabel>(new GUILabel("High Score:" + std::to_string(highScore)));
+	// Set the vertical alignment of the label to GUI_VALIGN_BOTTOM
+	mHighScoreLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_TOP);
+	// Add the GUILabel to the GUIComponent  
+	shared_ptr<GUIComponent> high_score_component
+		= static_pointer_cast<GUIComponent>(mHighScoreLabel);
+	mGameDisplay->GetContainer()->AddComponent(high_score_component, GLVector2f(0.0f, 1.0f));
+}

@@ -74,6 +74,12 @@ private:
 	void CreateStartMenuGUI();
 	shared_ptr<GUILabel> mStartMenuLabel;
 	bool inStartMenu;
+
+	// Part 2
+	int highScore;
+	string name;
+	shared_ptr<GUILabel> mHighScoreLabel;
+	void HighScoreGUI();
 };
 
 #endif
