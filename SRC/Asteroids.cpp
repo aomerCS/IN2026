@@ -12,6 +12,7 @@
 #include "GUILabel.h"
 #include "Explosion.h"
 
+
 // PUBLIC INSTANCE CONSTRUCTORS ///////////////////////////////////////////////
 
 /** Constructor. Takes arguments from command line, just in case. */
@@ -25,8 +26,7 @@ Asteroids::Asteroids(int argc, char *argv[])
 	inStartMenu = true;
 
 	// Part 2
-	highScore = 0;
-	name = "";
+	highScore = 50;
 }
 
 /** Destructor. */
@@ -175,11 +175,6 @@ void Asteroids::OnTimer(int value)
 	if (value == SHOW_GAME_OVER)
 	{
 		mGameOverLabel->SetVisible(true);
-
-		// Part 2
-		HighScoreGUI();
-		mScoreLabel->SetVisible(false);
-		mLivesLabel->SetVisible(false);
 	}
 
 }
@@ -256,20 +251,36 @@ void Asteroids::CreateGUI()
 		= static_pointer_cast<GUIComponent>(mGameOverLabel);
 	mGameDisplay->GetContainer()->AddComponent(game_over_component, GLVector2f(0.5f, 0.5f));
 
+	// Part 2
+	// Create a new GUILabel and wrap it up in a shared_ptr
+	mHighScoreLabel = make_shared<GUILabel>("High Score:" + std::to_string(highScore));
+	// Set the horizontal alignment of the label to GUI_HALIGN_RIGHT
+	mHighScoreLabel->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_RIGHT);
+	// Set the vertical alignment of the label to GUI_VALIGN_TOP
+	mHighScoreLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_TOP);
+	// Add the GUILabel to the GUIComponent  
+	shared_ptr<GUIComponent> high_score_component = static_pointer_cast<GUIComponent>(mHighScoreLabel);
+	mGameDisplay->GetContainer()->AddComponent(high_score_component, GLVector2f(1.0f, 1.0f));
 }
 
 void Asteroids::OnScoreChanged(int score)
 {
 	// Format the score message using an string-based stream
-	std::ostringstream msg_stream;
-	msg_stream << "Score: " << score;
+	std::ostringstream score_msg_stream;
+	score_msg_stream << "Score: " << score;
 	// Get the score message as a string
-	std::string score_msg = msg_stream.str();
+	std::string score_msg = score_msg_stream.str();
 	mScoreLabel->SetText(score_msg);
 
 	// Part 2
 	if (score > highScore) {
 		highScore = score;
+		// Format the score message using an string-based stream
+		std::ostringstream high_score_msg_stream;
+		high_score_msg_stream << "High Score: " << highScore;
+		// Get the score message as a string
+		std::string high_score_msg = high_score_msg_stream.str();
+		mHighScoreLabel->SetText(high_score_msg);
 	}
 }
 
@@ -342,15 +353,26 @@ void Asteroids::StartMenu()
 }
 
 // Part 2
-void Asteroids::HighScoreGUI()
-{
-	// Part 2
-	// Create a new GUILabel and wrap it up in a shared_ptr
-	mHighScoreLabel = shared_ptr<GUILabel>(new GUILabel("High Score:" + std::to_string(highScore)));
-	// Set the vertical alignment of the label to GUI_VALIGN_BOTTOM
-	mHighScoreLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_TOP);
-	// Add the GUILabel to the GUIComponent  
-	shared_ptr<GUIComponent> high_score_component
-		= static_pointer_cast<GUIComponent>(mHighScoreLabel);
-	mGameDisplay->GetContainer()->AddComponent(high_score_component, GLVector2f(0.0f, 1.0f));
-}
+//void Asteroids::WriteFile(string text)
+//	//ofstream myFile;
+	//myFile.open("../ASSETS/scores.txt");
+	//myFile << text + "\n";
+	//myFile.close();
+//}
+
+// Part 2
+//void Asteroids::ReadFile()
+//{
+	//highScore = 20;
+	//std::ifstream input("../ASSETS/scores.txt");
+	//input >> highScore;
+
+	//string line;
+	//std::ifstream myFile;
+	//myFile.open("../ASSETS/scores.txt");
+	//while (getline(myFile, line)) {
+		//cout << line;
+	//}
+
+	//myFile.close();
+//}

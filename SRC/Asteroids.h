@@ -77,9 +77,7 @@ private:
 
 	// Part 2
 	int highScore;
-	string name;
 	shared_ptr<GUILabel> mHighScoreLabel;
-	void HighScoreGUI();
 };
 
 #endif
