@@ -76,7 +76,8 @@ private:
 	bool inStartMenu;
 
 	// Part 2
-	int highScore;
+	string highScore;
+	int new_score;
 	shared_ptr<GUILabel> mHighScoreLabel;
 };
 

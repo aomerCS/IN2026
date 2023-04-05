@@ -26,7 +26,16 @@ Asteroids::Asteroids(int argc, char *argv[])
 	inStartMenu = true;
 
 	// Part 2
-	highScore = 50;
+	ifstream highScoreFile;
+	highScoreFile.open("scores.txt");
+	highScoreFile >> highScore;
+
+	// Check if file is empty
+	if (highScore.empty())
+	{
+		highScore = '0';
+	}
+
 }
 
 /** Destructor. */
@@ -253,7 +262,7 @@ void Asteroids::CreateGUI()
 
 	// Part 2
 	// Create a new GUILabel and wrap it up in a shared_ptr
-	mHighScoreLabel = make_shared<GUILabel>("High Score:" + std::to_string(highScore));
+	mHighScoreLabel = make_shared<GUILabel>("High Score: " + highScore);
 	// Set the horizontal alignment of the label to GUI_HALIGN_RIGHT
 	mHighScoreLabel->SetHorizontalAlignment(GUIComponent::GUI_HALIGN_RIGHT);
 	// Set the vertical alignment of the label to GUI_VALIGN_TOP
@@ -273,15 +282,16 @@ void Asteroids::OnScoreChanged(int score)
 	mScoreLabel->SetText(score_msg);
 
 	// Part 2
-	if (score > highScore) {
-		highScore = score;
-		// Format the score message using an string-based stream
-		std::ostringstream high_score_msg_stream;
-		high_score_msg_stream << "High Score: " << highScore;
-		// Get the score message as a string
-		std::string high_score_msg = high_score_msg_stream.str();
-		mHighScoreLabel->SetText(high_score_msg);
-	}
+	
+	// Store our score in a global scope variable
+	new_score = score;
+
+	// Format the score message using an string-based stream
+	std::ostringstream high_score_msg_stream;
+	high_score_msg_stream << "High Score: " << highScore;
+	// Get the score message as a string
+	std::string high_score_msg = high_score_msg_stream.str();
+	mHighScoreLabel->SetText(high_score_msg);
 }
 
 void Asteroids::OnPlayerKilled(int lives_left)
@@ -305,6 +315,12 @@ void Asteroids::OnPlayerKilled(int lives_left)
 	else
 	{
 		SetTimer(500, SHOW_GAME_OVER);
+
+		// Part 2
+		ofstream highScoreFile;
+		highScoreFile.open("scores.txt");
+		highScoreFile << new_score;
+		highScoreFile.close();
 	}
 }
 
@@ -351,28 +367,3 @@ void Asteroids::StartMenu()
 	// Create the GUI
 	CreateGUI();
 }
-
-// Part 2
-//void Asteroids::WriteFile(string text)
-//	//ofstream myFile;
-	//myFile.open("../ASSETS/scores.txt");
-	//myFile << text + "\n";
-	//myFile.close();
-//}
-
-// Part 2
-//void Asteroids::ReadFile()
-//{
-	//highScore = 20;
-	//std::ifstream input("../ASSETS/scores.txt");
-	//input >> highScore;
-
-	//string line;
-	//std::ifstream myFile;
-	//myFile.open("../ASSETS/scores.txt");
-	//while (getline(myFile, line)) {
-		//cout << line;
-	//}
-
-	//myFile.close();
-//}
