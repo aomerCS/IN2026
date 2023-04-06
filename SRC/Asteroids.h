@@ -79,6 +79,12 @@ private:
 	string highScore;
 	int new_score;
 	shared_ptr<GUILabel> mHighScoreLabel;
+
+	// Part 3
+	void DemoMode();
+
+	// Extra
+	shared_ptr<GUILabel> mLevelLabel;
 };
 
 #endif
