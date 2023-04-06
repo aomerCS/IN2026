@@ -38,6 +38,16 @@ public:
 		}
 	}
 
+	// Part 3
+	int GetMScore()
+	{
+		return mScore;
+	}
+	void SetMScore(int value)
+	{
+		mScore = value;
+	}
+
 private:
 	int mScore;
 

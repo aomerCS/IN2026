@@ -77,11 +77,12 @@ private:
 
 	// Part 2
 	string highScore;
-	int new_score;
 	shared_ptr<GUILabel> mHighScoreLabel;
 
 	// Part 3
 	void DemoMode();
+	shared_ptr<GameObject> CreateAISpaceship();
+	shared_ptr<Spaceship> mAISpaceship;
 
 	// Extra
 	shared_ptr<GUILabel> mLevelLabel;

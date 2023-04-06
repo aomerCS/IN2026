@@ -75,16 +75,14 @@ void Asteroids::Start()
 	Animation *asteroid1_anim = AnimationManager::GetInstance().CreateAnimationFromFile("asteroid1", 128, 8192, 128, 128, "asteroid1_fs.png");
 	Animation *spaceship_anim = AnimationManager::GetInstance().CreateAnimationFromFile("spaceship", 128, 128, 128, 128, "spaceship_fs.png");
 
-	// Create a spaceship and add it to the world
-	mGameWorld->AddObject(CreateSpaceship());
-	// Create some asteroids and add them to the world
-	CreateAsteroids(10);
+	// Part 3
+	DemoMode();
 
 	//Create the GUI
 	CreateGUI();
 
 	// Add a player (watcher) to the game world
-	mGameWorld->AddListener(&mPlayer);
+	//mGameWorld->AddListener(&mPlayer);
 
 	// Add this class as a listener of the player
 	mPlayer.AddListener(thisPtr);
@@ -126,69 +124,53 @@ void Asteroids::OnKeyReleased(uchar key, int x, int y) {}
 
 void Asteroids::OnSpecialKeyPressed(int key, int x, int y)
 {
-	switch (key)
-	{
-	// If up arrow key is pressed start applying forward thrust
-	case GLUT_KEY_UP: 
-		// Part 3
-		if (inStartMenu == false) {
-			mSpaceship->Thrust(10); 
-			break;
-		}
-		else { break; }
-	// If left arrow key is pressed start rotating anti-clockwise
-	case GLUT_KEY_LEFT: 
-		// Part 3
-		if (inStartMenu == false) {
-			mSpaceship->Rotate(90);
-			break;
-		}
-		else { break; }
-	// If right arrow key is pressed start rotating clockwise
-	case GLUT_KEY_RIGHT: 
-		// Part 3
-		if (inStartMenu == false) {
-			mSpaceship->Rotate(-90);
-			break;
-		}
-		else { break; }
-	// Default case - do nothing
-	default: 
-		break;
+	// Part 3
+	if (inStartMenu == false) {
+		switch (key)
+			{
+			// If up arrow key is pressed start applying forward thrust
+			case GLUT_KEY_UP: 
+				mSpaceship->Thrust(10); 
+				break;
+			// If left arrow key is pressed start rotating anti-clockwise
+			case GLUT_KEY_LEFT: 
+				mSpaceship->Rotate(90);
+				break;
+			// If right arrow key is pressed start rotating clockwise
+			case GLUT_KEY_RIGHT: 
+				mSpaceship->Rotate(-90);
+				break;
+			// Default case - do nothing
+			default: 
+				break;
+			}
 	}
+	
 }
 
 void Asteroids::OnSpecialKeyReleased(int key, int x, int y)
 {
-	switch (key)
-	{
-	// If up arrow key is released stop applying forward thrust
-	case GLUT_KEY_UP: 
-		// Part 3
-		if (inStartMenu == false) {
-			mSpaceship->Thrust(0);
-			break;
-		}
-		else { break; }
-	// If left arrow key is released stop rotating
-	case GLUT_KEY_LEFT: 
-		// Part 3
-		if (inStartMenu == false) {
-			mSpaceship->Rotate(0);
-			break;
-		}
-		else { break; }
-	// If right arrow key is released stop rotating
-	case GLUT_KEY_RIGHT: 
-		// Part 3
-		if (inStartMenu == false) {
-			mSpaceship->Rotate(0);
-			break;
-		}
-		else { break; }
-	// Default case - do nothing
-	default: break;
-	} 
+	// Part 3
+	if (inStartMenu == false) {
+		switch (key)
+			{
+			// If up arrow key is released stop applying forward thrust
+			case GLUT_KEY_UP: 
+				mSpaceship->Thrust(0);
+				break;
+			// If left arrow key is released stop rotating
+			case GLUT_KEY_LEFT: 
+				mSpaceship->Rotate(0);
+				break;
+			// If right arrow key is released stop rotating
+			case GLUT_KEY_RIGHT: 
+				mSpaceship->Rotate(0);
+				break;
+			// Default case - do nothing
+			default: break;
+			} 
+	}
+	
 }
 
 
@@ -234,7 +216,7 @@ void Asteroids::OnTimer(int value)
 		// Part 2
 		ofstream highScoreFile;
 		highScoreFile.open("scores.txt");
-		highScoreFile << new_score;
+		highScoreFile << mScoreKeeper.GetMScore();
 		highScoreFile.close();
 	}
 
@@ -349,16 +331,18 @@ void Asteroids::CreateGUI()
 
 void Asteroids::OnScoreChanged(int score)
 {
+	// Part 3
+	if (inStartMenu) {
+		mScoreKeeper.SetMScore(0);
+		score = mScoreKeeper.GetMScore();
+	}
+
 	// Format the score message using an string-based stream
 	std::ostringstream score_msg_stream;
 	score_msg_stream << "Score: " << score;
 	// Get the score message as a string
 	std::string score_msg = score_msg_stream.str();
 	mScoreLabel->SetText(score_msg);
-
-	// Part 2
-	// Store our score in a global scope variable
-	new_score = score;
 
 	// Format the score message using an string-based stream
 	std::ostringstream high_score_msg_stream;
@@ -420,5 +404,27 @@ void Asteroids::StartMenu()
 	inStartMenu = false;
 	mStartMenuLabel->SetVisible(false);
 
-	mSpaceship->Reset();
+	// Create a spaceship and add it to the world
+	//mGameWorld->AddObject(CreateSpaceship());
+	// Create some asteroids and add them to the world
+	//CreateAsteroids(10);
+
+	mGameWorld->AddListener(&mPlayer);
+	SetTimer(0, CREATE_NEW_PLAYER);
 }
+
+
+// Part 3
+void Asteroids::DemoMode()
+{
+	// Create a spaceship and add it to the world
+	//mGameWorld->AddObject(CreateAISpaceship());
+	mGameWorld->AddObject(CreateSpaceship());
+	// Create some asteroids and add them to the world
+	CreateAsteroids(10);
+
+	//mAISpaceship->Thrust(rand() % 10 + (-2));
+	//mAISpaceship->Shoot();
+}
+
+
