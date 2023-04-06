@@ -70,19 +70,16 @@ private:
 	Player mPlayer;
 
 	// Part 1
-	void StartMenu();
-	void CreateStartMenuGUI();
 	shared_ptr<GUILabel> mStartMenuLabel;
 	bool inStartMenu;
+	const static uint START_GAME = 3;
 
 	// Part 2
 	string highScore;
 	shared_ptr<GUILabel> mHighScoreLabel;
 
 	// Part 3
-	void DemoMode();
-	shared_ptr<GameObject> CreateAISpaceship();
-	shared_ptr<Spaceship> mAISpaceship;
+	const static uint AI_ACTION = 4;
 
 	// Extra
 	shared_ptr<GUILabel> mLevelLabel;

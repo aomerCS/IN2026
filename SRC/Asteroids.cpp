@@ -12,7 +12,6 @@
 #include "GUILabel.h"
 #include "Explosion.h"
 
-
 // PUBLIC INSTANCE CONSTRUCTORS ///////////////////////////////////////////////
 
 /** Constructor. Takes arguments from command line, just in case. */
@@ -75,11 +74,16 @@ void Asteroids::Start()
 	Animation *asteroid1_anim = AnimationManager::GetInstance().CreateAnimationFromFile("asteroid1", 128, 8192, 128, 128, "asteroid1_fs.png");
 	Animation *spaceship_anim = AnimationManager::GetInstance().CreateAnimationFromFile("spaceship", 128, 128, 128, 128, "spaceship_fs.png");
 
-	// Part 3
-	DemoMode();
+	// Create a spaceship and add it to the world
+	mGameWorld->AddObject(CreateSpaceship());
+	// Create some asteroids and add them to the world
+	CreateAsteroids(10);
 
 	//Create the GUI
 	CreateGUI();
+
+	// Part 3
+	SetTimer(100, AI_ACTION);
 
 	// Add a player (watcher) to the game world
 	//mGameWorld->AddListener(&mPlayer);
@@ -113,7 +117,7 @@ void Asteroids::OnKeyPressed(uchar key, int x, int y)
 		else { break; }
 	// Part 1
 	case '\r':
-		if (inStartMenu) { StartMenu(); }
+		if (inStartMenu) { SetTimer(100, START_GAME); }
 		else { break; }
 	default:
 		break;
@@ -125,7 +129,7 @@ void Asteroids::OnKeyReleased(uchar key, int x, int y) {}
 void Asteroids::OnSpecialKeyPressed(int key, int x, int y)
 {
 	// Part 3
-	if (inStartMenu == false) {
+	if (!inStartMenu) {
 		switch (key)
 			{
 			// If up arrow key is pressed start applying forward thrust
@@ -151,7 +155,7 @@ void Asteroids::OnSpecialKeyPressed(int key, int x, int y)
 void Asteroids::OnSpecialKeyReleased(int key, int x, int y)
 {
 	// Part 3
-	if (inStartMenu == false) {
+	if (!inStartMenu) {
 		switch (key)
 			{
 			// If up arrow key is released stop applying forward thrust
@@ -172,7 +176,6 @@ void Asteroids::OnSpecialKeyReleased(int key, int x, int y)
 	}
 	
 }
-
 
 // PUBLIC INSTANCE METHODS IMPLEMENTING IGameWorldListener ////////////////////
 
@@ -218,6 +221,37 @@ void Asteroids::OnTimer(int value)
 		highScoreFile.open("scores.txt");
 		highScoreFile << mScoreKeeper.GetMScore();
 		highScoreFile.close();
+	}
+
+	// Part 1
+	if (value == START_GAME)
+	{
+		// Set startmenu to false
+		inStartMenu = false;
+		// Remove startmenu text
+		mStartMenuLabel->SetVisible(false);
+
+		// Create a spaceship and add it to the world
+		//mGameWorld->AddObject(CreateSpaceship());
+		// Create some asteroids and add them to the world
+		//CreateAsteroids(10);
+
+		// Add a player (watcher) to the game world
+		mGameWorld->AddListener(&mPlayer);
+		// Add our players Spaceship to the game
+		SetTimer(0, CREATE_NEW_PLAYER);
+	}
+
+	// Part 3
+	if (value == AI_ACTION)
+	{
+		if (inStartMenu) {
+			// Random actions every 500ms
+			mSpaceship->Thrust(rand() % 20 + (-20));
+			mSpaceship->Rotate(rand() % 120 + (-60));
+			mSpaceship->Shoot();
+			SetTimer(500, AI_ACTION);
+		}
 	}
 
 }
@@ -344,6 +378,7 @@ void Asteroids::OnScoreChanged(int score)
 	std::string score_msg = score_msg_stream.str();
 	mScoreLabel->SetText(score_msg);
 
+	// Part 2
 	// Format the score message using an string-based stream
 	std::ostringstream high_score_msg_stream;
 	high_score_msg_stream << "High Score: " << highScore;
@@ -396,35 +431,3 @@ shared_ptr<GameObject> Asteroids::CreateExplosion()
 	explosion->Reset();
 	return explosion;
 }
-
-// Part 1
-void Asteroids::StartMenu()
-{
-	// Set startmenu to false
-	inStartMenu = false;
-	mStartMenuLabel->SetVisible(false);
-
-	// Create a spaceship and add it to the world
-	//mGameWorld->AddObject(CreateSpaceship());
-	// Create some asteroids and add them to the world
-	//CreateAsteroids(10);
-
-	mGameWorld->AddListener(&mPlayer);
-	SetTimer(0, CREATE_NEW_PLAYER);
-}
-
-
-// Part 3
-void Asteroids::DemoMode()
-{
-	// Create a spaceship and add it to the world
-	//mGameWorld->AddObject(CreateAISpaceship());
-	mGameWorld->AddObject(CreateSpaceship());
-	// Create some asteroids and add them to the world
-	CreateAsteroids(10);
-
-	//mAISpaceship->Thrust(rand() % 10 + (-2));
-	//mAISpaceship->Shoot();
-}
-
-
