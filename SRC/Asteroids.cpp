@@ -83,10 +83,7 @@ void Asteroids::Start()
 	CreateGUI();
 
 	// Part 3
-	SetTimer(100, AI_ACTION);
-
-	// Add a player (watcher) to the game world
-	//mGameWorld->AddListener(&mPlayer);
+	SetTimer(100, DEMO_MODE);
 
 	// Add this class as a listener of the player
 	mPlayer.AddListener(thisPtr);
@@ -119,8 +116,9 @@ void Asteroids::OnKeyPressed(uchar key, int x, int y)
 	case '\r':
 		if (inStartMenu) { SetTimer(100, START_GAME); }
 		else { break; }
+	// Part 1
 	default:
-		break;
+		break; 
 	}
 }
 
@@ -230,11 +228,7 @@ void Asteroids::OnTimer(int value)
 		inStartMenu = false;
 		// Remove startmenu text
 		mStartMenuLabel->SetVisible(false);
-
-		// Create a spaceship and add it to the world
-		//mGameWorld->AddObject(CreateSpaceship());
-		// Create some asteroids and add them to the world
-		//CreateAsteroids(10);
+		mTitleLabel->SetVisible(false);
 
 		// Add a player (watcher) to the game world
 		mGameWorld->AddListener(&mPlayer);
@@ -243,17 +237,16 @@ void Asteroids::OnTimer(int value)
 	}
 
 	// Part 3
-	if (value == AI_ACTION)
+	if (value == DEMO_MODE)
 	{
 		if (inStartMenu) {
 			// Random actions every 500ms
 			mSpaceship->Thrust(rand() % 20 + (-20));
-			mSpaceship->Rotate(rand() % 120 + (-60));
+			mSpaceship->Rotate(rand() % 360 + (-360));
 			mSpaceship->Shoot();
-			SetTimer(500, AI_ACTION);
+			SetTimer(500, DEMO_MODE);
 		}
 	}
-
 }
 
 // PROTECTED INSTANCE METHODS /////////////////////////////////////////////////
@@ -361,6 +354,15 @@ void Asteroids::CreateGUI()
 	// Add the GUILabel to the GUIComponent  
 	shared_ptr<GUIComponent> levels_component = static_pointer_cast<GUIComponent>(mLevelLabel);
 	mGameDisplay->GetContainer()->AddComponent(levels_component, GLVector2f(1.0f, 0.0f));
+
+	// Extra
+	// Create a new GUILabel and wrap it up in a shared_ptr
+	mTitleLabel = make_shared<GUILabel>("Asteroids");
+	// Set the vertical alignment of the label to GUI_VALIGN_TOP
+	mTitleLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_TOP);
+	// Add the GUILabel to the GUIComponent  
+	shared_ptr<GUIComponent> title_component = static_pointer_cast<GUIComponent>(mTitleLabel);
+	mGameDisplay->GetContainer()->AddComponent(title_component, GLVector2f(0.35f, 1.0f));
 }
 
 void Asteroids::OnScoreChanged(int score)

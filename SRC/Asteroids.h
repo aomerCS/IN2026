@@ -79,10 +79,12 @@ private:
 	shared_ptr<GUILabel> mHighScoreLabel;
 
 	// Part 3
-	const static uint AI_ACTION = 4;
+	const static uint DEMO_MODE = 4;
 
 	// Extra
 	shared_ptr<GUILabel> mLevelLabel;
+	shared_ptr<GUILabel> mTitleLabel;
+	bool inGameOver;
 };
 
 #endif
