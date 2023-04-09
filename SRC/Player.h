@@ -40,6 +40,10 @@ public:
 		}
 	}
 
+	// Extra
+	int GetMLives() { return mLives; }
+	void SetMLives(int value) { mLives = value; }
+
 private:
 	int mLives;
 
