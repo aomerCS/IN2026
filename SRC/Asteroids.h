@@ -71,6 +71,7 @@ private:
 
 	// Part 1
 	shared_ptr<GUILabel> mStartMenuLabel;
+	shared_ptr<GUILabel> mTitleLabel;
 	bool inStartMenu;
 	const static uint START_GAME = 3;
 
@@ -80,11 +81,10 @@ private:
 
 	// Part 3
 	const static uint DEMO_MODE = 4;
+	shared_ptr<GUILabel> mDemoModeLabel;
 
 	// Extra
 	shared_ptr<GUILabel> mLevelLabel;
-	shared_ptr<GUILabel> mTitleLabel;
-	bool inGameOver;
 };
 
 #endif

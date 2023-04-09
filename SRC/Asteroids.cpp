@@ -35,7 +35,6 @@ Asteroids::Asteroids(int argc, char *argv[])
 	{
 		highScore = '0';
 	}
-
 }
 
 /** Destructor. */
@@ -56,9 +55,6 @@ void Asteroids::Start()
 
 	// Add this as a listener to the world and the keyboard
 	mGameWindow->AddKeyboardListener(thisPtr);
-
-	// Add a score keeper to the game world
-	mGameWorld->AddListener(&mScoreKeeper);
 
 	// Add this class as a listener of the score keeper
 	mScoreKeeper.AddListener(thisPtr);
@@ -81,6 +77,16 @@ void Asteroids::Start()
 
 	//Create the GUI
 	CreateGUI();
+
+	// Part 1
+	mScoreLabel->SetVisible(false);
+	mLivesLabel->SetVisible(false);
+
+	// Part 2
+	mHighScoreLabel->SetVisible(false);
+
+	// Extra
+	mLevelLabel->SetVisible(false);
 
 	// Part 3
 	SetTimer(100, DEMO_MODE);
@@ -106,8 +112,8 @@ void Asteroids::OnKeyPressed(uchar key, int x, int y)
 	switch (key)
 	{
 	case ' ':
-		// Part 3
-		if (inStartMenu == false) {
+		// Part 1
+		if (!inStartMenu) {
 			mSpaceship->Shoot();
 			break;
 		}
@@ -116,7 +122,6 @@ void Asteroids::OnKeyPressed(uchar key, int x, int y)
 	case '\r':
 		if (inStartMenu) { SetTimer(100, START_GAME); }
 		else { break; }
-	// Part 1
 	default:
 		break; 
 	}
@@ -126,7 +131,7 @@ void Asteroids::OnKeyReleased(uchar key, int x, int y) {}
 
 void Asteroids::OnSpecialKeyPressed(int key, int x, int y)
 {
-	// Part 3
+	// Part 1
 	if (!inStartMenu) {
 		switch (key)
 			{
@@ -147,12 +152,11 @@ void Asteroids::OnSpecialKeyPressed(int key, int x, int y)
 				break;
 			}
 	}
-	
 }
 
 void Asteroids::OnSpecialKeyReleased(int key, int x, int y)
 {
-	// Part 3
+	// Part 1
 	if (!inStartMenu) {
 		switch (key)
 			{
@@ -172,7 +176,6 @@ void Asteroids::OnSpecialKeyReleased(int key, int x, int y)
 			default: break;
 			} 
 	}
-	
 }
 
 // PUBLIC INSTANCE METHODS IMPLEMENTING IGameWorldListener ////////////////////
@@ -191,6 +194,15 @@ void Asteroids::OnObjectRemoved(GameWorld* world, shared_ptr<GameObject> object)
 			SetTimer(500, START_NEXT_LEVEL); 
 		}
 	}
+
+	// Extra
+	// Checks if new level has been reached
+	// Format the score message using an string-based stream
+	std::ostringstream level_msg_stream;
+	level_msg_stream << "Level: " + to_string(mLevel);
+	// Get the score message as a string
+	std::string level_msg = level_msg_stream.str();
+	mLevelLabel->SetText(level_msg);
 }
 
 // PUBLIC INSTANCE METHODS IMPLEMENTING ITimerListener ////////////////////////
@@ -224,16 +236,27 @@ void Asteroids::OnTimer(int value)
 	// Part 1
 	if (value == START_GAME)
 	{
-		// Set startmenu to false
+		// Part 1
 		inStartMenu = false;
-		// Remove startmenu text
 		mStartMenuLabel->SetVisible(false);
-		mTitleLabel->SetVisible(false);
+		mScoreLabel->SetVisible(true);
+		mLivesLabel->SetVisible(true);
 
+		// Add a score keeper to the game world
+		mGameWorld->AddListener(&mScoreKeeper);
 		// Add a player (watcher) to the game world
 		mGameWorld->AddListener(&mPlayer);
-		// Add our players Spaceship to the game
+
 		SetTimer(0, CREATE_NEW_PLAYER);
+
+		// Part 2
+		mHighScoreLabel->SetVisible(true);
+
+		// Part 3
+		mDemoModeLabel->SetVisible(false);
+
+		// Extra
+		mLevelLabel->SetVisible(true);
 	}
 
 	// Part 3
@@ -267,7 +290,6 @@ shared_ptr<GameObject> Asteroids::CreateSpaceship()
 	mSpaceship->Reset();
 	// Return the spaceship so it can be added to the world
 	return mSpaceship;
-
 }
 
 void Asteroids::CreateAsteroids(const uint num_asteroids)
@@ -333,6 +355,15 @@ void Asteroids::CreateGUI()
 		= static_pointer_cast<GUIComponent>(mStartMenuLabel);
 	mGameDisplay->GetContainer()->AddComponent(start_game_component, GLVector2f(0.5f, 0.5f));
 
+	// Part 1
+	// Create a new GUILabel and wrap it up in a shared_ptr
+	mTitleLabel = make_shared<GUILabel>("ASTEROIDS");
+	// Set the vertical alignment of the label to GUI_VALIGN_TOP
+	mTitleLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_TOP);
+	// Add the GUILabel to the GUIComponent  
+	shared_ptr<GUIComponent> title_component = static_pointer_cast<GUIComponent>(mTitleLabel);
+	mGameDisplay->GetContainer()->AddComponent(title_component, GLVector2f(0.35f, 1.0f));
+
 	// Part 2
 	// Create a new GUILabel and wrap it up in a shared_ptr
 	mHighScoreLabel = make_shared<GUILabel>("High Score: " + highScore);
@@ -344,6 +375,15 @@ void Asteroids::CreateGUI()
 	shared_ptr<GUIComponent> high_score_component = static_pointer_cast<GUIComponent>(mHighScoreLabel);
 	mGameDisplay->GetContainer()->AddComponent(high_score_component, GLVector2f(1.0f, 1.0f));
 
+	// Part 3
+	// Create a new GUILabel and wrap it up in a shared_ptr
+	mDemoModeLabel = make_shared<GUILabel>("DEMO MODE");
+	// Set the vertical alignment of the label to GUI_VALIGN_BOTTOM
+	mDemoModeLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_BOTTOM);
+	// Add the GUILabel to the GUIComponent  
+	shared_ptr<GUIComponent> demo_mode_component = static_pointer_cast<GUIComponent>(mDemoModeLabel);
+	mGameDisplay->GetContainer()->AddComponent(demo_mode_component, GLVector2f(0.35f, 0.0f));
+
 	// Extra
 	// Create a new GUILabel and wrap it up in a shared_ptr
 	mLevelLabel = make_shared<GUILabel>("Level: " + to_string(mLevel));
@@ -354,48 +394,16 @@ void Asteroids::CreateGUI()
 	// Add the GUILabel to the GUIComponent  
 	shared_ptr<GUIComponent> levels_component = static_pointer_cast<GUIComponent>(mLevelLabel);
 	mGameDisplay->GetContainer()->AddComponent(levels_component, GLVector2f(1.0f, 0.0f));
-
-	// Extra
-	// Create a new GUILabel and wrap it up in a shared_ptr
-	mTitleLabel = make_shared<GUILabel>("Asteroids");
-	// Set the vertical alignment of the label to GUI_VALIGN_TOP
-	mTitleLabel->SetVerticalAlignment(GUIComponent::GUI_VALIGN_TOP);
-	// Add the GUILabel to the GUIComponent  
-	shared_ptr<GUIComponent> title_component = static_pointer_cast<GUIComponent>(mTitleLabel);
-	mGameDisplay->GetContainer()->AddComponent(title_component, GLVector2f(0.35f, 1.0f));
 }
 
 void Asteroids::OnScoreChanged(int score)
 {
-	// Part 3
-	if (inStartMenu) {
-		mScoreKeeper.SetMScore(0);
-		score = mScoreKeeper.GetMScore();
-	}
-
 	// Format the score message using an string-based stream
 	std::ostringstream score_msg_stream;
 	score_msg_stream << "Score: " << score;
 	// Get the score message as a string
 	std::string score_msg = score_msg_stream.str();
 	mScoreLabel->SetText(score_msg);
-
-	// Part 2
-	// Format the score message using an string-based stream
-	std::ostringstream high_score_msg_stream;
-	high_score_msg_stream << "High Score: " << highScore;
-	// Get the score message as a string
-	std::string high_score_msg = high_score_msg_stream.str();
-	mHighScoreLabel->SetText(high_score_msg);
-
-	// Extra
-	// Checks if new level has been reached
-	// Format the score message using an string-based stream
-	std::ostringstream level_msg_stream;
-	level_msg_stream << "Level: " + to_string(mLevel);
-	// Get the score message as a string
-	std::string level_msg = level_msg_stream.str();
-	mLevelLabel->SetText(level_msg);
 }
 
 void Asteroids::OnPlayerKilled(int lives_left)
