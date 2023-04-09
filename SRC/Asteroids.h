@@ -82,6 +82,7 @@ private:
 	// Part 3
 	const static uint DEMO_MODE = 4;
 	shared_ptr<GUILabel> mDemoModeLabel;
+	GameObjectList mAsteroidObjects;
 
 	// Extra
 	shared_ptr<GUILabel> mLevelLabel;

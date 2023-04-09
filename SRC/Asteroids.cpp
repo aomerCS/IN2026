@@ -227,10 +227,12 @@ void Asteroids::OnTimer(int value)
 		mGameOverLabel->SetVisible(true);
 
 		// Part 2
-		ofstream highScoreFile;
-		highScoreFile.open("scores.txt");
-		highScoreFile << mScoreKeeper.GetMScore();
-		highScoreFile.close();
+		if (mScoreKeeper.GetMScore() > stoi(highScore)) {
+			ofstream highScoreFile;
+			highScoreFile.open("scores.txt");
+			highScoreFile << mScoreKeeper.GetMScore();
+			highScoreFile.close();
+		}		
 	}
 
 	// Part 1
@@ -266,6 +268,7 @@ void Asteroids::OnTimer(int value)
 			// Random actions every 500ms
 			mSpaceship->Thrust(rand() % 20 + (-20));
 			mSpaceship->Rotate(rand() % 360 + (-360));
+			mSpaceship->AddVelocity(mAsteroidObjects.back()->GetVelocity());
 			mSpaceship->Shoot();
 			SetTimer(500, DEMO_MODE);
 		}
@@ -294,6 +297,10 @@ shared_ptr<GameObject> Asteroids::CreateSpaceship()
 
 void Asteroids::CreateAsteroids(const uint num_asteroids)
 {
+	// Part 3
+	// Add game object
+	mAsteroidObjects = {};
+
 	mAsteroidCount = num_asteroids;
 	for (uint i = 0; i < num_asteroids; i++)
 	{
@@ -306,6 +313,9 @@ void Asteroids::CreateAsteroids(const uint num_asteroids)
 		asteroid->SetSprite(asteroid_sprite);
 		asteroid->SetScale(0.2f);
 		mGameWorld->AddObject(asteroid);
+
+		// Part 3
+		mAsteroidObjects.push_back(asteroid);
 	}
 }
 
